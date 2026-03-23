@@ -277,28 +277,39 @@ class LinuxDoBrowser:
 
     def print_connect_info(self):
         logger.info("获取连接信息")
-        page = self.browser.new_tab()
-        page.get("https://connect.linux.do/")
-        rows = page.ele("tag:table").eles("tag:tr")
-        if rows:
-    
-            info = []
-    
-            for row in rows:
-                cells = row.eles("tag:td")
-                if len(cells) >= 3:
-                    project = cells[0].text.strip()
-                    current = cells[1].text.strip()
-                    requirement = cells[2].text.strip()
-                    info.append([project, current, requirement])
-            msg = tabulate(info, headers=["项目", "当前", "要求"], tablefmt="pretty")
-            print("--------------Connect Info-----------------")
-            print(msg)
-            List.append(msg)
-        else:
-            logger.info("连接错误，请检查！（账户等级过低，无法查看任务信息）")
-            List.append("连接错误，请检查！（账户等级过低，无法查看任务信息）")
-        page.close()
+        page = None
+        try:
+            page = self.browser.new_tab()
+            page.get("https://connect.linux.do/")
+            table = page.ele("tag:table", timeout=5)
+            if not table:
+                raise Exception("未找到表格")
+            rows = table.eles("tag:tr")
+            if rows:
+                info = []
+                for row in rows:
+                    cells = row.eles("tag:td")
+                    if len(cells) >= 3:
+                        project = cells[0].text.strip()
+                        current = cells[1].text.strip()
+                        requirement = cells[2].text.strip()
+                        info.append([project, current, requirement])
+                msg = tabulate(info, headers=["项目", "当前", "要求"], tablefmt="pretty")
+                print("--------------Connect Info-----------------")
+                print(msg)
+                List.append(msg)
+            else:
+                logger.info("连接错误，请检查！（账户等级过低，无法查看任务信息）")
+                List.append("连接错误，请检查！（账户等级过低，无法查看任务信息）")
+        except Exception as e:
+            logger.warning(f"获取连接信息失败: {str(e)}")
+            List.append("连接信息获取失败（账户等级可能过低）")
+        finally:
+            if page:
+                try:
+                    page.close()
+                except:
+                    pass
 
     def send_notifications(self):
         msg = '\n'.join(List)
