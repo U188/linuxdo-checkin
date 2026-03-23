@@ -197,10 +197,8 @@ class LinuxDoBrowser:
         else:
             self.page.get("https://ping0.cc/geo")
             ip_addr = self.page.ele('tag:body').text
-            logger.info(f"当前ip无法访问：
- {ip_addr}")
-            List.append(f"当前ip无法访问：
- {ip_addr}")
+            logger.info("当前ip无法访问：\n" + ip_addr)
+            List.append("当前ip无法访问：\n" + ip_addr)
             return False
     def click_topic(self):
         topic_list = self.page.ele("@id=list-area").eles(".:title")
