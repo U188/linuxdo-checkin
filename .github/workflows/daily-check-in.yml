@@ -28,5 +28,7 @@ jobs:
           BROWSE_ENABLED: ${{ secrets.BROWSE_ENABLED }}
           TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
           TG_USER_ID: ${{ secrets.TG_USER_ID }}
+          LINUXDO_COOKIE_T: ${{ secrets.LINUXDO_COOKIE_T }}
+          LINUXDO_COOKIE_FORUM_SESSION: ${{ secrets.LINUXDO_COOKIE_FORUM_SESSION }}
         run: |
           .venv/bin/python main.py
