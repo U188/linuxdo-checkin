@@ -2,17 +2,15 @@ name: Daily Check-in
 
 on:
   schedule:
-    #- cron: '0 1 * * *'  # 每天1点 UTC 时间执行
-    - cron: "35 16,7 * * *"
+    - cron: "0 0,8 * * *"  # 每天 08:00 和 16:00 北京时间（UTC 0:00 和 8:00）
 
   workflow_dispatch:
 
 jobs:
   run_script:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     permissions: write-all
-    timeout-minutes: 20            ## 限制运行时间在20分钟内，超出自动取消
-    #if: ${{ github.event.repository.private }}   ## 限制在私有仓库下运行
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@main
         
@@ -37,17 +35,3 @@ jobs:
           TG_USER_ID: ${{ secrets.TG_USER_ID }}
         run: |
           python main.py
-
-      - name: Random Cron
-        env:
-          PAT: ${{ secrets.PAT }}
-        if: always() && env.PAT
-        uses: grbnb/random-workflow-cron@v2
-        with:
-          github_token: ${{ secrets.PAT }}   ## 具有workflow权限的PAT密钥 教程https://github.com/grbnb/random-workflow-cron/blob/v2/README.md#troubleshooting
-          #push_switch: false
-          keep_history: true
-          time_zone: "UTC+8"
-          hour_start: 0
-          hour_end: 21
-          interval_count: 2
