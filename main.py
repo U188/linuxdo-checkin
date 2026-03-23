@@ -133,7 +133,7 @@ class LinuxDoBrowser:
         # 注入 Cookie（跳过 Turnstile 登录）
         if COOKIE_T and COOKIE_FORUM_SESSION:
             self.page.get(HOME_URL)
-            self.browser.set_cookies([
+            self.page.set.cookies([
                 {"name": "_t", "value": COOKIE_T, "domain": "linux.do", "path": "/"},
                 {"name": "_forum_session", "value": COOKIE_FORUM_SESSION, "domain": "linux.do", "path": "/"},
             ])
