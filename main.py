@@ -203,8 +203,11 @@ class LinuxDoBrowser:
     def click_topic(self):
         topic_list = self.page.ele("@id=list-area").eles(".:title")
         logger.info(f"发现 {len(topic_list)} 个主题帖，随机选择10个")
+        self.browse_count = 0
+        self.like_count = 0
         for topic in random.sample(topic_list, 10):
             self.click_one_topic(topic.attr("href"))
+            self.browse_count += 1
 
     @retry_decorator()
     def click_one_topic(self, topic_url):
@@ -254,7 +257,7 @@ class LinuxDoBrowser:
         if BROWSE_ENABLED:
             self.click_topic()  # 点击主题
             logger.info("完成浏览任务")
-            List.append("完成浏览任务")
+            List.append(f"✅完成浏览任务：共浏览 {getattr(self, 'browse_count', 10)} 篇文章，点赞 {getattr(self, 'like_count', 0)} 次")
 
         self.print_connect_info()  # 打印连接信息
         self.send_notifications()  # 发送通知
